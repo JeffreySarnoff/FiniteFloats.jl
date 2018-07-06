@@ -235,16 +235,16 @@ Finite32(x::Float16) = Finite32(Float32(x))
 Finite16(x::Float64) = Finite16(Float16(x))
 Finite16(x::Float32) = Finite16(Float16(x))
 
-Base.promote_rule(::Type{Int64}, :Type{Finite64}) = Finite64
-Base.promote_rule(::Type{Int32}, :Type{Finite32}) = Finite32
-Base.promote_rule(::Type{Int16}, :Type{Finite16}) = Finite16
+Base.promote_rule(::Type{Int64}, ::Type{Finite64}) = Finite64
+Base.promote_rule(::Type{Int32}, ::Type{Finite32}) = Finite32
+Base.promote_rule(::Type{Int16}, ::Type{Finite16}) = Finite16
 
-Base.promote_rule(::Type{Int32}, :Type{Finite64}) = Finite64
-Base.promote_rule(::Type{Int16}, :Type{Finite64}) = Finite64
-Base.promote_rule(::Type{Int16}, :Type{Finite32}) = Finite32
-Base.promote_rule(::Type{Int64}, :Type{Finite32}) = Finite64
-Base.promote_rule(::Type{Int64}, :Type{Finite16}) = Finite64
-Base.promote_rule(::Type{Int32}, :Type{Finite16}) = Finite32
+Base.promote_rule(::Type{Int32}, ::Type{Finite64}) = Finite64
+Base.promote_rule(::Type{Int16}, ::Type{Finite64}) = Finite64
+Base.promote_rule(::Type{Int16}, ::Type{Finite32}) = Finite32
+Base.promote_rule(::Type{Int64}, ::Type{Finite32}) = Finite64
+Base.promote_rule(::Type{Int64}, ::Type{Finite16}) = Finite64
+Base.promote_rule(::Type{Int32}, ::Type{Finite16}) = Finite32
 
 Finite64(x::Int64) = Finite64(Float64(x))
 Finite64(x::Int32) = Finite64(Float64(x))
