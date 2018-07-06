@@ -62,10 +62,10 @@ In addition to the familiar functions that work with Float64, Float32, Float16,
     min, max, minmax,
     clamp, sqrt, cbrt, hypot,
     
->    exp, expm1, exp2, exp10,
+-   exp, expm1, exp2, exp10,
     log, log1p, log2, log10,
  
-> rad2deg, deg2rad, mod2pi, rem2pi,
+- rad2deg, deg2rad, mod2pi, rem2pi,
     sin, cos, tan, csc, sec, cot,
     asin, acos, atan, acsc, asec, acot,
 
