@@ -112,8 +112,11 @@ Float64(x::Finite64) = reinterpret(Float64, x)
 Float32(x::Finite32) = reinterpret(Float32, x)
 Float16(x::Finite16) = reinterpret(Float16, x)
 
-for O in ( :string,
+for O in ( :(-), :(+),
+           :string,
+           :sign,
            :prevfloat, :nextfloat,
+           :round, :trunc, :ceil, :floor,
            :inv, :abs, :sqrt, :cbrt,
            :exp, :expm1, :exp2, :exp10,
            :log, :log1p, :log2, :log10,
@@ -145,15 +148,62 @@ end
 
 
 
-#=            
- div, rem, fld, mod, cld,
- round, trunc, ceil, floor,
- signbit, copysign, flipsign, sign,
- frexp, ldexp, modf,
- min, max, minmax,
- clamp, hypot,
- sincos
-=#
+for O in ( :flipsign, :copysign,
+           :min, :max, 
+           :(+), :(-), :(*), :(/), :(^),  
+           :div, :rem, :fld, :mod, :cld,
+           :hypot 
+          )       
+    @eval begin
+        $O(x::Finite64, y::Finite64) = Finite64($O(Float64(x), Float64(y))) 
+        $O(x::Finite32, y::Finite32) = Finite32($O(Float32(x), Float32(y))) 
+        $O(x::Finite16, y::Finite16) = Finite16($O(Float16(x), Float16(y))) 
+    end
+end
+
+for O in ( :(==), :(!=),
+           :(<), :(<=), :(>=), :(>), :(^),  
+           :isequal, :isless
+          )       
+    @eval begin
+        $O(x::Finite64, y::Finite64) = $O(Float64(x), Float64(y)) 
+        $O(x::Finite32, y::Finite32) = $O(Float32(x), Float32(y)) 
+        $O(x::Finite16, y::Finite16) = $O(Float16(x), Float16(y)) 
+    end
+end
+
+signbit(x::Finite64) = signbit(Float64(x))
+signbit(x::Finite32) = signbit(Float32(x))
+signbit(x::Finite16) = signbit(Float16(x))
+
+for O in ( :minmax, :modf )       
+    @eval begin
+        $O(x::Finite64, y::Finite64) = Finite64.($O(Float64(x), Float64(y))) 
+        $O(x::Finite32, y::Finite32) = Finite32.($O(Float32(x), Float32(y))) 
+        $O(x::Finite16, y::Finite16) = Finite16.($O(Float16(x), Float16(y)))
+    end
+end
+
+frexp(x::Finite64) = map((a,b)->(Finite64(a), b), frexp(Float64(x))...,)
+frexp(x::Finite32) = map((a,b)->(Finite32(a), b), frexp(Float32(x))...,)
+frexp(x::Finite16) = map((a,b)->(Finite16(a), b), frexp(Float16(x))...,)
+
+ldexp(x::Finite64, y::Int) = Finite64(ldexp(Float64(x), y))
+ldexp(x::Finite32, y::Int) = Finite32(ldexp(Float32(x), y))
+ldexp(x::Finite16, y::Int) = Finite16(ldexp(Float16(x), y))
+
+sincos(x::Finite64) = map((a,b)->(Finite64(a), Finite64(b)), sincos(Float64(x))...,)
+sincos(x::Finite32) = map((a,b)->(Finite32(a), Finite32(b)), sincos(Float32(x))...,)
+sincos(x::Finite16) = map((a,b)->(Finite16(a), Finite16(b)), sincos(Float16(x))...,)
+
+clamp(x::T, lo::T, hi::T) where {T<:Finite64} = Finite64(clamp(Float64(x), Float64(lo), Float64(hi)))
+
+for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float16) )
+   @eval begin
+       clamp(x::$T, lo::$T, hi::$T) = $T( clamp($F(x), $F(lo), $F(hi)) )
+   end
+end
+
 
 
 Base.promote_rule(::Type{Float64}, :Type{Finite64}) = Finite64
@@ -177,6 +227,13 @@ Base.promote_rule(::Type{Float16}, :Type{Finite32}) = Finite32
 Base.promote_rule(::Type{Float64}, :Type{Finite32}) = Finite64
 Base.promote_rule(::Type{Float64}, :Type{Finite16}) = Finite64
 Base.promote_rule(::Type{Float32}, :Type{Finite16}) = Finite32
+
+Finite64(x::Float32) = Finite64(Float64(x))
+Finite64(x::Float16) = Finite64(Float64(x))
+Finite32(x::Float64) = Finite32(Float32(x))
+Finite32(x::Float16) = Finite32(Float32(x))
+Finite16(x::Float64) = Finite16(Float16(x))
+Finite16(x::Float32) = Finite16(Float16(x))
 
 Base.promote_rule(::Type{Int64}, :Type{Finite64}) = Finite64
 Base.promote_rule(::Type{Int32}, :Type{Finite32}) = Finite32
