@@ -1,2 +1,48 @@
 # FiniteFloats.jl
-Floats with neither Infinities nor NaNs nor signed zeros.
+
+#### Floats with neither Infinities nor NaNs nor signed zeros.
+
+
+----
+
+#### Copyright ©2018 by Jeffrey Sarnoff.
+####  This work is released under The MIT License.
+
+
+-----
+
+[![Build Status](https://travis-ci.org/JeffreySarnoff/FiniteFloats.jl.svg?branch=master)](https://travis-ci.org/JeffreySarnoff/FiniteFloats.jl)
+----
+
+## Use
+```julia
+
+using FiniteFloats
+
+julia> a = sqrt(Finite64(2))
+1.4142135623730951
+
+julia> typeof(a)
+Finite64
+
+julia> b = Finite32(Inf32)
+3.4028235f38
+
+julia> b == typemax(Finite32)
+true
+```
+
+## Exports
+
+### exported types
+
+__Finite64, Finite32, Finite16__
+
+### exported functions
+
+In addition to the familiar functions that work with Float64, Float32, Float16,    
+(comparisions, floating part decompositions, arithmetic, elementary functions)
+
+- square, cube
+
+
