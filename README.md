@@ -34,11 +34,11 @@ true
 
 ## Exports
 
-### exported types
+#### exported types
 
-__Finite64, Finite32, Finite16__
+- Finite64, Finite32, Finite16
 
-### exported functions
+#### exported functions
 
 In addition to the familiar functions that work with Float64, Float32, Float16,    
 (comparisions, floating part decompositions, arithmetic, elementary functions)
@@ -46,3 +46,4 @@ In addition to the familiar functions that work with Float64, Float32, Float16,
 - square, cube
 
 
+----
