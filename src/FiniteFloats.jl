@@ -166,7 +166,10 @@ Base.promote_rule(::Type{Finite32}, :Type{Finite16}) = Finite32
 
 Finite64(x::Finite32) = Finite64(Float64(Float32(x)))
 Finite64(x::Finite16) = Finite64(Float64(Float16(x)))
+Finite32(x::Finite64) = Finite32(Float32(Float64(x)))
 Finite32(x::Finite16) = Finite32(Float32(Float16(x)))
+Finite16(x::Finite64) = Finite16(Float16(Float64(x)))
+Finite16(x::Finite16) = Finite16(Float16(Float16(x)))
 
 Base.promote_rule(::Type{Float32}, :Type{Finite64}) = Finite64
 Base.promote_rule(::Type{Float16}, :Type{Finite64}) = Finite64
@@ -174,6 +177,38 @@ Base.promote_rule(::Type{Float16}, :Type{Finite32}) = Finite32
 Base.promote_rule(::Type{Float64}, :Type{Finite32}) = Finite64
 Base.promote_rule(::Type{Float64}, :Type{Finite16}) = Finite64
 Base.promote_rule(::Type{Float32}, :Type{Finite16}) = Finite32
+
+Base.promote_rule(::Type{Int64}, :Type{Finite64}) = Finite64
+Base.promote_rule(::Type{Int32}, :Type{Finite32}) = Finite32
+Base.promote_rule(::Type{Int16}, :Type{Finite16}) = Finite16
+
+Base.promote_rule(::Type{Int32}, :Type{Finite64}) = Finite64
+Base.promote_rule(::Type{Int16}, :Type{Finite64}) = Finite64
+Base.promote_rule(::Type{Int16}, :Type{Finite32}) = Finite32
+Base.promote_rule(::Type{Int64}, :Type{Finite32}) = Finite64
+Base.promote_rule(::Type{Int64}, :Type{Finite16}) = Finite64
+Base.promote_rule(::Type{Int32}, :Type{Finite16}) = Finite32
+
+Finite64(x::Int64) = Finite64(Float64(x))
+Finite64(x::Int32) = Finite64(Float64(x))
+Finite64(x::Int16) = Finite64(Float64(x))
+Finite32(x::Int64) = Finite32(Float32(x))
+Finite32(x::Int32) = Finite32(Float32(x))
+Finite32(x::Int16) = Finite32(Float32(x))
+Finite16(x::Int64) = Finite16(Float16(x))
+Finite16(x::Int32) = Finite16(Float16(x))
+Finite16(x::Int16) = Finite16(Float16(x))
+
+Int64(x::Finite64) = Int64(Float64(x))
+Int64(x::Finite32) = Int64(Float64(Float32(x)))
+Int64(x::Finite16) = Int64(Float64(Float16(x)))
+Int32(x::Finite64) = Int32(Float64(x))
+Int32(x::Finite32) = Int32(Float32(x))
+Int32(x::Finite16) = Int32(Float16(x))
+Int16(x::Finite64) = Int16(Float64(x))
+Int16(x::Finite32) = Int16(Float32(x))
+Int16(x::Finite16) = Int16(Float16(x))
+
 
 
 end # FiniteFloats
