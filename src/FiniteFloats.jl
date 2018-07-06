@@ -2,7 +2,7 @@ module FiniteFloats
 
 export Finite64, Finite32, Finite16,
        typemaxneg, typeminneg,
-       square, cube, 
+       square, cube 
 
 import Base: hash, string, show, 
     promote_rule, convert, 
