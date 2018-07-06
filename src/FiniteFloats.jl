@@ -138,6 +138,8 @@ for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float1
        Base.String(x::$T) = String($F(x))
        $T(x::String) = $T(parse($F, x))
        Base.show(io::IO, x::$T) = show(io, $F(x))
+       square(x::$T) = $T($F(x)*$F(x))
+       cube(x::$T) = $T($F(x)*$F(x)*$F(x))              
    end
 end
 
