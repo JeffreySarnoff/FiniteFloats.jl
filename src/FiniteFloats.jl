@@ -131,11 +131,11 @@ for O in ( :string,
     end
 end
 
-
-for T in ( :Finite64, :Finite32, :Finite16 )
+for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float16) )
    @eval begin
-       Base.show(io::IO, x::$T) = print(io, string(x))
-       Base.show(x::$T) = print(Base.stdio, string(x))
+       Base.String(x::$T) = String($F(x))
+       $T(x::String) = $T(parse($F, x))
+       Base.show(io::IO, x::$T) = show(io, $F(x))
    end
 end
 
