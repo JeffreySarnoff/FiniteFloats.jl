@@ -38,13 +38,44 @@ true
 
 - Finite64, Finite32, Finite16
 
-#### exported functions
+#### supported functions
 
 In addition to the familiar functions that work with Float64, Float32, Float16,    
 (comparisions, floating part decompositions, arithmetic, elementary functions)
 
 - square, cube
-- typemaxneg, typeminneg
+
+>    string, show, 
+    typemax, typemin, realmax, realmin,
+    
+>    significand, exponent, precision,
+    prevfloat, nextfloat, isequal, isless,
+    
+>    (==), (!=), (<), (<=), (>=), (>),
+    (+), (-), (*), (/), (^),
+    
+>    inv, div, rem, fld, mod, cld,
+    round, trunc, ceil, floor,
+    
+>    abs, signbit, copysign, flipsign, sign,
+    frexp, ldexp, modf,
+    min, max, minmax,
+    clamp, sqrt, cbrt, hypot,
+    
+>    exp, expm1, exp2, exp10,
+    log, log1p, log2, log10,
+ 
+> rad2deg, deg2rad, mod2pi, rem2pi,
+    sin, cos, tan, csc, sec, cot,
+    asin, acos, atan, acsc, asec, acot,
+
+> sinh, cosh, tanh, csch, sech, coth,
+    asinh, acosh, atanh, acsch, asech, acoth,
+
+> sincos, sinc, sinpi, cospi,
+    sind, cosd, tand, cscd, secd, cotd,
+    asind, acosd, atand, acscd, asecd, acotd
+
 
 ----
 
