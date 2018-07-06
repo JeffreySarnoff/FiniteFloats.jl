@@ -44,6 +44,6 @@ In addition to the familiar functions that work with Float64, Float32, Float16,
 (comparisions, floating part decompositions, arithmetic, elementary functions)
 
 - square, cube
-
+- typemaxneg, typeminneg
 
 ----
