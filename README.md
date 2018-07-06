@@ -50,9 +50,9 @@ In addition to the familiar functions that work with Float64, Float32, Float16,
 
 ## Examples
 ```julia
-julia> inv(Float64(0)), inv(Finite64(0))
-(Inf, 1.7976931348623157e308)
+julia> Float64(0) * inv(Float64(0))
+NaN
 
-julia> Float64(0) * inv(Float64(0)), Finite64(0) * inv(Finite64(0))
-(NaN, 0.0)
+julia> Finite64(0) * inv(Finite64(0))
+0.0
 ```
