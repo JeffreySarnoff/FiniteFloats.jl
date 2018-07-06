@@ -4,7 +4,9 @@ export Finite64, Finite32, Finite16,
        typemaxneg, typeminneg,
        square, cube, 
 
-import Base: typemax, typemin, realmax, realmin,
+import Base: hash, string, show, 
+    promote_rule, convert, 
+    typemax, typemin, realmax, realmin,
     significand, exponent, precision,
     (==), (!=), (<), (<=), (>=), (>), isequal, isless,
     (+), (-), (*), (/), (^),
@@ -23,7 +25,7 @@ import Base: typemax, typemin, realmax, realmin,
     asinh, acosh, atanh, acsch, asech, acoth,
     sincos, sinc, sinpi, cospi,
     sind, cosd, tand, cscd, secd, cotd,
-    asind, acosd, atand, acscd, asecd, acotd,
+    asind, acosd, atand, acscd, asecd, acotd
         
     
     
@@ -109,6 +111,44 @@ Float64(x::Finite64) = reinterpret(Float64, x)
 Float32(x::Finite32) = reinterpret(Float32, x)
 Float16(x::Finite16) = reinterpret(Float16, x)
 
+for O in ( :string,
+           :inv, :abs, :sqrt, :cbrt,
+           :exp, :expm1, :exp2, :exp10,
+           :log, :log1p, :log2, :log10,
+           :rad2deg, :deg2rad, :mod2pi, :rem2pi,
+           :sin, :cos, :tan, :csc, :sec, :cot,
+           :asin, :acos, :atan, :acsc, :asec, :acot,
+           :sinh, :cosh, :tanh, :csch, :sech, :coth,
+           :asinh, :acosh, :atanh, :acsch, :asech, :acoth,
+           :sinc, :sinpi, :cospi,
+           :sind, :cosd, :tand, :cscd, :secd, :cotd,
+           :asind, :acosd, :atand, :acscd, :asecd, :acotd
+          )       
+    @eval begin
+        $O(x::Finite64) = Finite64($O(Float64(x))) 
+        $O(x::Finite32) = Finite32($O(Float32(x))) 
+        $O(x::Finite16) = Finite16($O(Float16(x))) 
+    end
+end
 
 
+for T in ( :Finite64, :Finite32, :Finite16 )
+   @eval begin
+       Base.show(io::IO, x::$T) = print(io, string(x))
+       Base.show(x::$T) = print(Base.stdio, string(x))
+   end
+end
+
+
+
+#=            
+ div, rem, fld, mod, cld,
+ round, trunc, ceil, floor,
+ signbit, copysign, flipsign, sign,
+ frexp, ldexp, modf,
+ min, max, minmax,
+ clamp, hypot,
+ sincos
+=#
+                  
 end # FiniteFloats
