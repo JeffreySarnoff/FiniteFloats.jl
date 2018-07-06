@@ -8,6 +8,7 @@ import Base: hash, string, show,
     promote_rule, convert, 
     typemax, typemin, realmax, realmin,
     significand, exponent, precision,
+    prevfloat, nextfloat,
     (==), (!=), (<), (<=), (>=), (>), isequal, isless,
     (+), (-), (*), (/), (^),
     inv, div, rem, fld, mod, cld,
@@ -112,6 +113,7 @@ Float32(x::Finite32) = reinterpret(Float32, x)
 Float16(x::Finite16) = reinterpret(Float16, x)
 
 for O in ( :string,
+           :prevfloat, :nextfloat,
            :inv, :abs, :sqrt, :cbrt,
            :exp, :expm1, :exp2, :exp10,
            :log, :log1p, :log2, :log10,
