@@ -48,7 +48,7 @@ import LinearAlgebra: adjoint, adjoint!, axpby!, axpy!,
           rank, rdiv!, rmul!, scale!, schur, schur!,
           svd, svd!, svdvals, svdvals!, sylvester,
           tr, transpose, transpose!, transpose_type,
-          tril, tril!, triu, triu!, ×, ⋅
+          tril, tril!, triu, triu!
 
 include("types.jl")
 include("linearalgebra.jl")
