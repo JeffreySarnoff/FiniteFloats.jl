@@ -28,13 +28,15 @@ for F in (:adjoint, :expm, :exmp!, :logdet, :norm, :transpose)
    @eval $F(x::A) where {T<:AbstractFinite, A<:AbstractArray{T}} = T.($F(float(T).(x)))
 end
 
+for F in (:adjoint!, :copyto!, :dot, :eigen, :eigvals, :eigvecs, :expm, :expm!,
+          :fill!, :kron, :qr, :schur, :svd, :svdvals, :transpose!)
+    @eval $F(x::M, y::M) where {T<:AbstractFinite, M<:AbstractMatrix{T}} = T.($F(float(T).(x), float(T).(y)))
+end
+
 #=
 for F in (:copyto!, :cross, :dot, :expm, :expm!, :fill!, :kron)
     @eval $F(x::V, y::V) where {T<:AbstractFinite, V<:AbstractVector{T}} = T.($F(float(T).(x), float(T).(y)))
 end
 
-for F in (:adjoint!, :copyto!, :dot, :eigen, :eigvals, :eigvecs, :expm, :expm!,
-          :fill!, :kron, :qr, :schur, :svd, :svdvals, :transpose!)
-    @eval $F(x::M, y::M) where {T<:AbstractFinite, V<:AbstractMatrix{T}} = T.($F(float(T).(x), float(T).(y)))
-end
+
 =#
