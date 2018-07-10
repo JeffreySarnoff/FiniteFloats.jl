@@ -29,10 +29,26 @@ import Base: hash, promote_rule, convert,
     sind, cosd, tand, cscd, secd, cotd,
     asind, acosd, atand, acscd, asecd, acotd
 
-import LinearAlgebra: 
+import LinearAlgebra: adjoint, adjoint!, axpby!, axpy!,
+          bunchkaufman, bunchkaufman!, cholesky, cholesky!,
+          cond, condskeel, copy_transpose!,
+          copyto!, cross, det, diag, diagind, diagm, dot,
+          eigen, eigen!, eigmax, eigmin, eigvals,
+          eigvals!, eigvecs, expm, expm!, factorize, fill!,
+          getq, hessenberg, hessenberg!,
+          isdiag, ishermitian, isposdef, isposdef!,
+          issuccess, issymmetric, istril, istriu, kron, ldiv!,
+          ldlt, ldlt!, lmul!, logabsdet, logdet,
+          lowrankdowndate, lowrankdowndate!, lowrankupdate,
+          lowrankupdate!, lq, lq!, lu, lu!, 
+          lyap, mul!, norm, normalize, normalize!, nullspace,
+          opnorm, ordschur, ordschur!, pinv, qr, qr!,
+          rank, rdiv!, rmul!, scale!, schur, schur!,
+          svd, svd!, svdvals, svdvals!, sylvester,
+          tr, transpose, transpose!, transpose_type,
+          tril, tril!, triu, triu!, ×, ⋅
 
 include("types.jl")
 include("linearalgebra.jl")
-
 
 end # FiniteFloats
