@@ -1,9 +1,32 @@
-
 abstract type AbstractFinite <: AbstractFloat end
 
 primitive type Finite64 <: AbstractFinite 64 end
 primitive type Finite32 <: AbstractFinite 32 end
 primitive type Finite16 <: AbstractFinite 16 end
+
+float(::Type{Finite64}) = Float64
+float(::Type{Finite32}) = Float32
+float(::Type{Finite16}) = Float16
+
+finite(::Type{Float64}) = Finite64
+finite(::Type{Float32}) = Finite32
+finite(::Type{Float16}) = Finite16
+
+finite(::Type{Int64}) = Finite64
+finite(::Type{Int32}) = Finite32
+finite(::Type{Int16}) = Finite16
+
+signed(::Type{Finite64}) = Int64
+signed(::Type{Finite32}) = Int32
+signed(::Type{Finite16}) = Int16
+
+finite(::Type{UInt64}) = Finite64
+finite(::Type{UInt32}) = Finite32
+finite(::Type{UInt16}) = Finite16
+
+unsigned(::Type{Finite64}) = UInt64
+unsigned(::Type{Finite32}) = UInt32
+unsigned(::Type{Finite16}) = UInt16
 
 Base.typemax(::Type{Finite64}) = 1.7976931348623157e308     #  realmax(Float64)
 Base.typemax(::Type{Finite32}) = 3.4028235f38               #  realmax(Float32)
