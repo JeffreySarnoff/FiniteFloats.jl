@@ -34,6 +34,8 @@ for F in (:adjoint!, :copyto!, :dot, :eigen, :eigvals, :eigvecs, :expm, :expm!,
 end
 
 #=
+stack overflow if used
+
 for F in (:copyto!, :cross, :dot, :expm, :expm!, :fill!, :kron)
     @eval $F(x::V, y::V) where {T<:AbstractFinite, V<:AbstractVector{T}} = T.($F(float(T).(x), float(T).(y)))
 end
