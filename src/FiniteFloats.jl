@@ -2,6 +2,7 @@ module FiniteFloats
 
 export AbstractFinite,
        Finite64, Finite32, Finite16,
+       finite,
        typemaxneg, typeminneg,
        square, cube 
 
@@ -9,6 +10,7 @@ import Base: hash, promote_rule, convert,
     string, show, 
     typemax, typemin, realmax, realmin,
     significand, exponent, precision,
+    float,
     prevfloat, nextfloat, isequal, isless,
     (==), (!=), (<), (<=), (>=), (>),
     (+), (-), (*), (/), (^),
