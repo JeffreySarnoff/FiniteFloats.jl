@@ -31,7 +31,7 @@ import Base: hash, promote_rule, convert,
     sind, cosd, tand, cscd, secd, cotd,
     asind, acosd, atand, acscd, asecd, acotd
 
-using LinearAlgebra
+import LinearAlgebra
 import LinearAlgebra: adjoint, adjoint!, axpby!, axpy!,
           bunchkaufman, bunchkaufman!, cholesky, cholesky!,
           cond, condskeel, copy_transpose!,
