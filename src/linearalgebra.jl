@@ -1,4 +1,4 @@
-for F in (:diag, :diagm, :expm, :exmp!, :logdet, :norm, :normalize, :normalize!, :pinv, :qr, :transpose)
+for F in (:diag, :diagm, :logdet, :norm, :normalize, :normalize!, :pinv, :qr, :transpose)
    @eval $F(x::A) where {T<:AbstractFinite, A<:AbstractVector{T}} = T.($F(float(T).(x)))
 end
 
