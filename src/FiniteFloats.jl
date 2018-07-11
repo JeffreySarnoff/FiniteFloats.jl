@@ -52,6 +52,8 @@ import LinearAlgebra: adjoint, adjoint!, axpby!, axpy!,
           tril, tril!, triu, triu!
 
 include("types.jl")
+
+include("linearalgebra_types.jl")
 include("linearalgebra.jl")
 
 end # FiniteFloats
