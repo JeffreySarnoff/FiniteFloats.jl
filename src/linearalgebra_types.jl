@@ -8,7 +8,7 @@ end
 
 
 for (O,F) in ( (:Adjoint, :adjoint), (:Transpose, :transpose),
-               (:BunchKaufman, :bunchkaufman), (:Cholesky, :cholseky), (:Hessenberg, :hessenberg),
+               (:BunchKaufman, :bunchkaufman), (:Cholesky, :cholesky), (:Hessenberg, :hessenberg),
                (:GeneralizedSVD, :svd), (:LDLt, :ldlt), (:LQ, :lq), (:LU, :lu), (:QR, :qr), (:Schur, :schur))
     @eval begin
         LinearAlgebra.$F(x::A) where {N, T<:AbstractFinite, A<:AbstractArray{T,N}} =
