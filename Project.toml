@@ -1,3 +1,6 @@
 name = "FiniteFloats"
-uuid = "12a8840a-80ec-11e8-30f8-6d7f1f6dee3f"
+uuid = "e34fb328-7f7f-54d6-9f45-12944764ead7"
+repo = "https://github.com/JeffreySarnoff/FiniteFloats.jl.git"\
+author = "Jeffrey Sarnoff"
+license = "MIT"
 version = "v0.0.1"
