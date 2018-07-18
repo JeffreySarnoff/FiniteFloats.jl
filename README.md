@@ -43,42 +43,42 @@ true
 In addition to the familiar functions that work with Float64, Float32, Float16,    
 (comparisions, floating part decompositions, arithmetic, elementary functions)
 
-- square, cube
+-    square, cube
 
 -    string, show, 
-    typemax, typemin, realmax, realmin
+-    typemax, typemin, realmax, realmin
     
--    significand, exponent, precision,
-    prevfloat, nextfloat, isequal, isless
+-    significand, exponent, precision
+-    prevfloat, nextfloat, isequal, isless
     
--    (==), (!=), (<), (<=), (>=), (>),
-    (+), (-), (*), (/), (^)
+-    (==), (!=), (<), (<=), (>=), (>)
+-    (+), (-), (*), (/), (^)
     
 -    inv, div, rem, fld, mod, cld
 
-- round, trunc, ceil, floor (single arg forms)
+-    round, trunc, ceil, floor (single arg forms)
     
--    abs, signbit, copysign, flipsign, sign,
-    frexp, ldexp, modf
+-    abs, signbit, copysign, flipsign, sign
+-    frexp, ldexp, modf
     
--    min, max, minmax,
-    clamp, sqrt, cbrt, hypot
+-    min, max, minmax
+-    clamp, sqrt, cbrt, hypot
     
--   exp, expm1, exp2, exp10,
-    log, log1p, log2, log10
+-    exp, expm1, exp2, exp10
+-    log, log1p, log2, log10
  
--    sin, cos, tan, csc, sec, cot,
-    asin, acos, atan, acsc, asec, acot
+-    sin, cos, tan, csc, sec, cot
+-    asin, acos, atan, acsc, asec, acot
 
-- sinh, cosh, tanh, csch, sech, coth,
-    asinh, acosh, atanh, acsch, asech, acoth
+-    sinh, cosh, tanh, csch, sech, coth,
+-    asinh, acosh, atanh, acsch, asech, acoth
 
 
--  sind, cosd, tand, cscd, secd, cotd,
-    asind, acosd, atand, acscd, asecd, acotd
+-    sind, cosd, tand, cscd, secd, cotd
+-    asind, acosd, atand, acscd, asecd, acotd
 
-- rad2deg, deg2rad, mod2pi, rem2pi,
-sincos, sinc, sinpi, cospi
+-    rad2deg, deg2rad, mod2pi, rem2pi
+-    sincos, sinc, sinpi, cospi
 
 
 ----
@@ -90,4 +90,9 @@ NaN
 
 julia> Finite64(0) * inv(Finite64(0))
 0.0
+
+julia> typemax(Finite64) == nextfloat(realmax(Finite64)) == realmax(Finite64)
+true
 ```
+
+Finite64|32|16 are saturating at ±realmax(T) 
