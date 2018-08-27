@@ -8,7 +8,7 @@ export AbstractFinite,
 
 import Base: hash, promote_rule, convert,
     string, show, 
-    typemax, typemin, realmax, realmin,
+    typemax, typemin, floatmax, floatmin,
     significand, exponent, precision,
     unsigned, signed, float,
     prevfloat, nextfloat, isequal, isless,
