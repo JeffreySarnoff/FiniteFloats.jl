@@ -42,12 +42,12 @@ typeminneg(::Type{Finite64})   = -2.2250738585072014e-308   # -realmin(Float64)
 typeminneg(::Type{Finite32})   = -1.1754944f-38             # -realmin(Float32)
 typeminneg(::Type{Finite16})   = Float16(-6.104e-5)         # -realmin(Float16)
 
-Base.realmax(::Type{Finite64}) = Base.typemax(Finite64)
-Base.realmax(::Type{Finite32}) = Base.typemax(Finite32)
-Base.realmax(::Type{Finite16}) = Base.typemax(Finite16)
-Base.realmin(::Type{Finite64}) = Base.typemin(Finite64)
-Base.realmin(::Type{Finite32}) = Base.typemin(Finite32)
-Base.realmin(::Type{Finite16}) = Base.typemin(Finite16)
+Base.floatmax(::Type{Finite64}) = Base.typemax(Finite64)
+Base.floatmax(::Type{Finite32}) = Base.typemax(Finite32)
+Base.floatmax(::Type{Finite16}) = Base.typemax(Finite16)
+Base.floatmin(::Type{Finite64}) = Base.typemin(Finite64)
+Base.floatmin(::Type{Finite32}) = Base.typemin(Finite32)
+Base.floatmin(::Type{Finite16}) = Base.typemin(Finite16)
 
 # consts are used to accelerate replacement of infinities
 
