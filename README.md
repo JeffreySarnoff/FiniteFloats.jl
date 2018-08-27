@@ -45,7 +45,7 @@ In addition to the familiar functions that work with Float64, Float32, Float16,
 -    square, cube
 
 -    string, show, 
--    typemax, typemin, realmax, realmin
+-    typemax, typemin, floatmax, floatmin
     
 -    significand, exponent, precision
 -    prevfloat, nextfloat, isequal, isless
