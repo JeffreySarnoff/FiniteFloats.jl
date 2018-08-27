@@ -66,10 +66,6 @@ const Finite16_minpos = typemin(Finite16)
 const Finite16_maxneg = typemaxneg(Finite16)
 const Finite16_minneg = typeminneg(Finite16)
 
-
-
-
-
 @inline function FiniteFloat64(x::Float64)
     isfinite(x) && return x
     if isinf(x)
@@ -156,7 +152,7 @@ for O in ( :flipsign, :copysign,
 end
 
 for O in ( :(==), :(!=),
-           :(<), :(<=), :(>=), :(>), :(^),  
+           :(<), :(<=), :(>=), :(>),  
            :isequal, :isless
           )       
     @eval begin
