@@ -3,7 +3,7 @@ uuid = "e34fb328-7f7f-54d6-9f45-12944764ead7"
 repo = "https://github.com/JeffreySarnoff/FiniteFloats.jl.git"
 author = "Jeffrey Sarnoff"
 license = "MIT"
-version = "v0.1.0"
+version = "v0.1.1"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
