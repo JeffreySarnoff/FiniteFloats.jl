@@ -90,8 +90,8 @@ NaN
 julia> Finite64(0) * inv(Finite64(0))
 0.0
 
-julia> typemax(Finite64) == nextfloat(realmax(Finite64)) == realmax(Finite64)
+julia> typemax(Finite64) == nextfloat(floatmax(Finite64)) == floatmax(Finite64)
 true
 ```
 
-Finite64|32|16 are saturating at ±realmax(T) 
+Finite64|32|16 are saturating at ±floatmax(T) 
