@@ -31,14 +31,14 @@ unsigned(::Type{Finite16}) = UInt16
 Base.typemax(::Type{Finite64}) = 1.7976931348623157e308     #  realmax(Float64)
 Base.typemax(::Type{Finite32}) = 3.4028235f38               #  realmax(Float32)
 Base.typemax(::Type{Finite16}) = Float16(6.55e4)            #  realmax(Float16)
-typemaxneg(::Type{Finite64})   = -1.7976931348623157e308    # -realmax(Float64) 
+typemaxneg(::Type{Finite64})   = -1.7976931348623157e308    # -realmax(Float64)
 typemaxneg(::Type{Finite32})   = -3.4028235f38              # -realmax(Float32)
 typemaxneg(::Type{Finite16})   = Float16(-6.55e4)           # -realmax(Float16)
 
 Base.typemin(::Type{Finite64}) = 2.2250738585072014e-308    #  realmin(Float64)
 Base.typemin(::Type{Finite32}) = 1.1754944f-38              #  realmin(Float32)
 Base.typemin(::Type{Finite16}) = Float16(6.104e-5)          #  realmin(Float16)
-typeminneg(::Type{Finite64})   = -2.2250738585072014e-308   # -realmin(Float64) 
+typeminneg(::Type{Finite64})   = -2.2250738585072014e-308   # -realmin(Float64)
 typeminneg(::Type{Finite32})   = -1.1754944f-38             # -realmin(Float32)
 typeminneg(::Type{Finite16})   = Float16(-6.104e-5)         # -realmin(Float16)
 
@@ -75,12 +75,36 @@ const Finite16_minneg = typeminneg(Finite16)
     end
 end
 
+""" No underflow-rounding mode for FiniteFloat64."""
+@inline function FiniteFloat64nu(x::Float64)
+    isfinite(x) && return x
+    if isinf(x)
+        signbit(x) ? Finite64_maxneg : Finite64_maxpos
+    elseif
+        signbit(x) ? Finite64_minneg : Finite64_minpos
+    else
+        throw(DomainError("NaN encountered"))
+    end
+end
+
 @inline function FiniteFloat32(x::Float32)
     isfinite(x) && return x
     if isinf(x)
        signbit(x) ? Finite32_maxneg : Finite32_maxpos
     else
        throw(DomainError("NaN32 encountered"))
+    end
+end
+
+""" No underflow-rounding mode for FiniteFloat32."""
+@inline function FiniteFloat32nu(x::Float32)
+    isfinite(x) && return x
+    if isinf(x)
+        signbit(x) ? Finite32_maxneg : Finite32_maxpos
+    elseif iszero(x)
+        signbit(x) ? Finite32_minneg : Finite32_minpos
+    else
+        throw(DomainError("NaN32 encountered"))
     end
 end
 
@@ -93,10 +117,25 @@ end
     end
 end
 
+"""No underflow-rounding mode for FiniteFloat16."""
+@inline function FiniteFloat16nu(x::Float16)
+    isfinite(x) && return x
+    if isinf(x)
+        signbit(x) ? Finite16_maxneg : Finite16_maxpos
+    elseif iszero(x)
+        signbit(x) ? Finite16_minneg : Finite16_minpos
+    else
+       throw(DomainError("NaN16 encountered"))
+    end
+end
 
 Finite64(x::Float64) = reinterpret(Finite64, FiniteFloat64(x))
 Finite32(x::Float32) = reinterpret(Finite32, FiniteFloat32(x))
 Finite16(x::Float16) = reinterpret(Finite16, FiniteFloat16(x))
+
+Finite64nu(x::Float64) = reinterpret(Finite64, FiniteFloat64nu(x))
+Finite32nu(x::Float32) = reinterpret(Finite32, FiniteFloat32nu(x))
+Finite16nu(x::Float16) = reinterpret(Finite16, FiniteFloat16nu(x))
 
 Float64(x::Finite64) = reinterpret(Float64, x)
 Float32(x::Finite32) = reinterpret(Float32, x)
@@ -118,11 +157,11 @@ for O in ( :(-), :(+),
            :sinc, :sinpi, :cospi,
            :sind, :cosd, :tand, :cscd, :secd, :cotd,
            :asind, :acosd, :atand, :acscd, :asecd, :acotd
-          )       
+          )
     @eval begin
-        $O(x::Finite64) = Finite64($O(Float64(x))) 
-        $O(x::Finite32) = Finite32($O(Float32(x))) 
-        $O(x::Finite16) = Finite16($O(Float16(x))) 
+        $O(x::Finite64) = Finite64($O(Float64(x)))
+        $O(x::Finite32) = Finite32($O(Float32(x)))
+        $O(x::Finite16) = Finite16($O(Float16(x)))
     end
 end
 
@@ -132,33 +171,42 @@ for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float1
        $T(x::String) = $T(parse($F, x))
        Base.show(io::IO, x::$T) = show(io, $F(x))
        square(x::$T) = $T($F(x)*$F(x))
-       cube(x::$T) = $T($F(x)*$F(x)*$F(x))              
+       cube(x::$T) = $T($F(x)*$F(x)*$F(x))
    end
 end
 
 
 
 for O in ( :flipsign, :copysign,
-           :min, :max, 
-           :(+), :(-), :(*), :(/), :(^),  
+           :min, :max,
+           :(+), :(-), # :(*), :(/), :(^),
            :div, :rem, :fld, :mod, :cld,
-           :hypot 
-          )       
+           :hypot
+          )
     @eval begin
-        $O(x::Finite64, y::Finite64) = Finite64($O(Float64(x), Float64(y))) 
-        $O(x::Finite32, y::Finite32) = Finite32($O(Float32(x), Float32(y))) 
-        $O(x::Finite16, y::Finite16) = Finite16($O(Float16(x), Float16(y))) 
+        $O(x::Finite64, y::Finite64) = Finite64($O(Float64(x), Float64(y)))
+        $O(x::Finite32, y::Finite32) = Finite32($O(Float32(x), Float32(y)))
+        $O(x::Finite16, y::Finite16) = Finite16($O(Float16(x), Float16(y)))
+    end
+end
+
+# No-underflow rounding mode only for *,/,^
+for O in ( :(*), :(/), :(^) )
+    @eval begin
+        $O(x::Finite64, y::Finite64) = Finite64nu($O(Float64(x), Float64(y)))
+        $O(x::Finite32, y::Finite32) = Finite32nu($O(Float32(x), Float32(y)))
+        $O(x::Finite16, y::Finite16) = Finite16nu($O(Float16(x), Float16(y)))
     end
 end
 
 for O in ( :(==), :(!=),
-           :(<), :(<=), :(>=), :(>),  
+           :(<), :(<=), :(>=), :(>),
            :isequal, :isless
-          )       
+          )
     @eval begin
-        $O(x::Finite64, y::Finite64) = $O(Float64(x), Float64(y)) 
-        $O(x::Finite32, y::Finite32) = $O(Float32(x), Float32(y)) 
-        $O(x::Finite16, y::Finite16) = $O(Float16(x), Float16(y)) 
+        $O(x::Finite64, y::Finite64) = $O(Float64(x), Float64(y))
+        $O(x::Finite32, y::Finite32) = $O(Float32(x), Float32(y))
+        $O(x::Finite16, y::Finite16) = $O(Float16(x), Float16(y))
     end
 end
 
@@ -166,10 +214,10 @@ signbit(x::Finite64) = signbit(Float64(x))
 signbit(x::Finite32) = signbit(Float32(x))
 signbit(x::Finite16) = signbit(Float16(x))
 
-for O in ( :minmax, :modf )       
+for O in ( :minmax, :modf )
     @eval begin
-        $O(x::Finite64, y::Finite64) = Finite64.($O(Float64(x), Float64(y))) 
-        $O(x::Finite32, y::Finite32) = Finite32.($O(Float32(x), Float32(y))) 
+        $O(x::Finite64, y::Finite64) = Finite64.($O(Float64(x), Float64(y)))
+        $O(x::Finite32, y::Finite32) = Finite32.($O(Float32(x), Float32(y)))
         $O(x::Finite16, y::Finite16) = Finite16.($O(Float16(x), Float16(y)))
     end
 end
