@@ -66,26 +66,26 @@ unsigned(::Type{Finite64}) = UInt64
 unsigned(::Type{Finite32}) = UInt32
 unsigned(::Type{Finite16}) = UInt16
 
-Base.typemax(::Type{Finite64}) = Finite64(1.7976931348623157e308)     #  realmax(Float64)
-Base.typemax(::Type{Finite32}) = Finite32(3.4028235f38)               #  realmax(Float32)
-Base.typemax(::Type{Finite16}) = Finite16(Float16(6.55e4))            #  realmax(Float16)
-typemaxneg(::Type{Finite64})   = Finite64(-1.7976931348623157e308)    # -realmax(Float64) 
-typemaxneg(::Type{Finite32})   = Finite32(-3.4028235f38)              # -realmax(Float32)
-typemaxneg(::Type{Finite16})   = Finite16(Float16(-6.55e4))           # -realmax(Float16)
+typemax(::Type{Finite64})    = Finite64(1.7976931348623157e308)     #  realmax(Float64)
+typemax(::Type{Finite32})    = Finite32(3.4028235f38)               #  realmax(Float32)
+typemax(::Type{Finite16})    = Finite16(Float16(6.55e4))            #  realmax(Float16)
+typemaxneg(::Type{Finite64}) = Finite64(-1.7976931348623157e308)    # -realmax(Float64) 
+typemaxneg(::Type{Finite32}) = Finite32(-3.4028235f38)              # -realmax(Float32)
+typemaxneg(::Type{Finite16}) = Finite16(Float16(-6.55e4))           # -realmax(Float16)
 
-Base.typemin(::Type{Finite64}) = Finite64(2.2250738585072014e-308)    #  realmin(Float64)
-Base.typemin(::Type{Finite32}) = Finite32(1.1754944f-38)              #  realmin(Float32)
-Base.typemin(::Type{Finite16}) = Finite16(Float16(6.104e-5))          #  realmin(Float16)
-typeminneg(::Type{Finite64})   = Finite64(-2.2250738585072014e-308)   # -realmin(Float64) 
-typeminneg(::Type{Finite32})   = Finite32(-1.1754944f-38)             # -realmin(Float32)
-typeminneg(::Type{Finite16})   = Finite16(Float16(-6.104e-5))         # -realmin(Float16)
+typemin(::Type{Finite64})    = Finite64(2.2250738585072014e-308)    #  realmin(Float64)
+typemin(::Type{Finite32})    = Finite32(1.1754944f-38)              #  realmin(Float32)
+typemin(::Type{Finite16})    = Finite16(Float16(6.104e-5))          #  realmin(Float16)
+typeminneg(::Type{Finite64}) = Finite64(-2.2250738585072014e-308)   # -realmin(Float64) 
+typeminneg(::Type{Finite32}) = Finite32(-1.1754944f-38)             # -realmin(Float32)
+typeminneg(::Type{Finite16}) = Finite16(Float16(-6.104e-5))         # -realmin(Float16)
 
-Base.floatmax(::Type{Finite64}) = Base.typemax(Finite64)
-Base.floatmax(::Type{Finite32}) = Base.typemax(Finite32)
-Base.floatmax(::Type{Finite16}) = Base.typemax(Finite16)
-Base.floatmin(::Type{Finite64}) = Base.typemin(Finite64)
-Base.floatmin(::Type{Finite32}) = Base.typemin(Finite32)
-Base.floatmin(::Type{Finite16}) = Base.typemin(Finite16)
+floatmax(::Type{Finite64}) = typemax(Finite64)
+floatmax(::Type{Finite32}) = typemax(Finite32)
+floatmax(::Type{Finite16}) = typemax(Finite16)
+floatmin(::Type{Finite64}) = typemin(Finite64)
+floatmin(::Type{Finite32}) = typemin(Finite32)
+floatmin(::Type{Finite16}) = typemin(Finite16)
 
 # consts are used to accelerate replacement of infinities
 
@@ -180,12 +180,36 @@ huge(::Type{Float64}) = inv(tiny(Float64))
 huge(::Type{Float32}) = inv(tiny(Float32))
 huge(::Type{Float16}) = inv(tiny(Float16))
 
+tiny(::Type{Fixed64}) = nextfloat(inv(prevfloat(Inf64)))
+tiny(::Type{Fixed32}) = nextfloat(inv(prevfloat(Inf32)))
+tiny(::Type{Fixed16}) = nextfloat(inv(prevfloat(Inf16)))
+
+huge(::Type{Fixed64}) = inv(tiny(Float64))
+huge(::Type{Fixed32}) = inv(tiny(Float32))
+huge(::Type{Fixed16}) = inv(tiny(Float16))
+
 
 #=
     Both pure magnitude (preceeding) and signed magnitude (following)
     versions of `tiny` and `huge` are defined.  Both are made available
     in an effort to facillitate future exploration.
 =#
+
+tinypos(::Type{Float64}) = nextfloat(inv(prevfloat(Inf64)))
+tinypos(::Type{Float32}) = nextfloat(inv(prevfloat(Inf32)))
+tinypos(::Type{Float16}) = nextfloat(inv(prevfloat(Inf16)))
+
+hugepos(::Type{Float64}) = inv(tiny(Float64))
+hugepos(::Type{Float32}) = inv(tiny(Float32))
+hugepos(::Type{Float16}) = inv(tiny(Float16))
+
+tinyneg(::Type{Float64}) = -tinypos(Float64)
+tinyneg(::Type{Float32}) = -tinypos(Float32)
+tinyneg(::Type{Float16}) = -tinypos(Float16)
+
+hugeneg(::Type{Float64}) = -hugepos(Float64)
+hugeneg(::Type{Float32}) = -hugepos(Float32)
+hugeneg(::Type{Float16}) = -hugepos(Float16)
 
 tinypos(::Type{Finite64}) = Finite64(nextfloat(inv(prevfloat(Inf64))))
 tinypos(::Type{Finite32}) = Finite32(nextfloat(inv(prevfloat(Inf32))))
@@ -204,42 +228,25 @@ hugeneg(::Type{Finite32}) = -hugepos(Finite32)
 hugeneg(::Type{Finite16}) = -hugepos(Finite16)
 
 
-#=
-    These values are used in arithmetically critical paths.
-    We define `const`s to gain a few units of throughput
-    when computing at the advancing cusp.
-=#
+@inline function withindomain(absx::T) where {T}
+    return tinypos(T) <= absx <= hugepos(T)
+end
 
-const TinyPos64 = tinypos(Finite64)
-const TinyPos32 = tinypos(Finite32)
-const TinyPos16 = tinypos(Finite16)
+@inline function saturate(x::T, absx::T) where {T}
+    return  if absx > hugepos(T)
+                copysign(hugepos(T), x)
+            else
+                copysign(tinypos(T), x)
+            end
+end
 
-const HugePos64 = hugepos(Finite64)
-const HugePos32 = hugepos(Finite32)
-const HugePos16 = hugepos(Finite16)
-
-const TinyNeg64 = tinyneg(Finite64)
-const TinyNeg32 = tinyneg(Finite32)
-const TinyNeg16 = tinyneg(Finite16)
-
-const HugeNeg64 = hugeneg(Finite64)
-const HugeNeg32 = hugeneg(Finite32)
-const HugeNeg16 = hugeneg(Finite16)
-
-macro saturating(fp, T)
-  quote
-    begin
-      local absfp = abs($fp)
-      local normalvalue = tiny($T) <= absfp <= huge($T)
-      return if normalvalue
-                 $fp
-             elseif absfp > huge($T)
-                 copysign(huge($T), $fp)
-             else
-                 copysign(tiny($T), $fp)
-             end
-    end
-  end
+@inline function saturating(x::T) where {T}
+    absx = abs(x)
+    return if withindomain(absx)
+               x
+           else
+               saturate(x, absx)
+           end
 end
 
 
@@ -248,13 +255,13 @@ for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float1
    @eval begin
        function square(x::$T)
             fp = $F(x)*$F(x)
-            fp = @saturating(fp,$T)
+            fp = saturating(fp)
             return $T(fp)    
        end
         
        function cube(x::$T)
             fp = $F(x)*$F(x)*$F(x)
-            fp = @saturating(fp,$T)
+            fp = saturating(fp)
             return $T(fp)
        end
    end
@@ -266,19 +273,19 @@ for O in ( :(+), :(-), :(*), :(/), :(^),
     @eval begin
         function $O(x::Finite64, y::Finite64)
             fp = $O(Float64(x), Float64(y))
-            fp = @saturating(fp, Float64)
+            fp = saturating(fp)
             return Finite64(fp)
         end
         
         function $O(x::Finite32, y::Finite32)
             fp = $O(Float32(x), Float32(y))
-            fp = @saturating(fp, Float32)
+            fp = saturating(fp)
             return Finite32(fp)
         end
         
         function $O(x::Finite16, y::Finite16)
             fp = $O(Float16(x), Float16(y))
-            fp = @saturating(fp, Float16)
+            fp = saturating(fp)
             return Finite16(fp)
         end
     end
