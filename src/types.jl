@@ -128,16 +128,14 @@ for O in ( :(-), :(+),
     end
 end
 
+
 for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float16) )
    @eval begin
        Base.String(x::$T) = String($F(x))
        $T(x::String) = $T(parse($F, x))
        Base.show(io::IO, x::$T) = show(io, $F(x))
-       square(x::$T) = $T($F(x)*$F(x))
-       cube(x::$T) = $T($F(x)*$F(x)*$F(x))              
    end
 end
-
 
 
 for O in ( :flipsign, :copysign,
@@ -146,6 +144,166 @@ for O in ( :flipsign, :copysign,
            :div, :rem, :fld, :mod, :cld,
            :hypot 
           )       
+    @eval begin
+        $O(x::Finite64, y::Finite64) = Finite64($O(Float64(x), Float64(y))) 
+        $O(x::Finite32, y::Finite32) = Finite32($O(Float32(x), Float32(y))) 
+        $O(x::Finite16, y::Finite16) = Finite16($O(Float16(x), Float16(y))) 
+    end
+end
+
+
+#=
+was 
+
+for O in ( :flipsign, :copysign,
+           :min, :max, 
+           :(+), :(-), :(*), :(/), :(^),  
+           :div, :rem, :fld, :mod, :cld,
+           :hypot 
+          )       
+    @eval begin
+        $O(x::Finite64, y::Finite64) = Finite64($O(Float64(x), Float64(y))) 
+        $O(x::Finite32, y::Finite32) = Finite32($O(Float32(x), Float32(y))) 
+        $O(x::Finite16, y::Finite16) = Finite16($O(Float16(x), Float16(y))) 
+    end
+end
+
+To obtain saturating underflow, `*`, `/`, `inv`, `^`, `hypot` must be intercepted.
+There may be other operations to intercept, `square`, `cube` come to mind.
+=#
+
+tiny(::Type{Float64}) = nextfloat(inv(prevfloat(Inf64)))
+tiny(::Type{Float32}) = nextfloat(inv(prevfloat(Inf32)))
+tiny(::Type{Float16}) = nextfloat(inv(prevfloat(Inf16)))
+
+huge(::Type{Float64}) = inv(tiny(Float64))
+huge(::Type{Float32}) = inv(tiny(Float32))
+huge(::Type{Float16}) = inv(tiny(Float16))
+
+
+#=
+    Both pure magnitude (preceeding) and signed magnitude (following)
+    versions of `tiny` and `huge` are defined.  Both are made available
+    in an effort to facillitate future exploration.
+=#
+
+tinypos(::Type{Finite64}) = Finite64(nextfloat(inv(prevfloat(Inf64))))
+tinypos(::Type{Finite32}) = Finite32(nextfloat(inv(prevfloat(Inf32))))
+tinypos(::Type{Finite16}) = Finite16(nextfloat(inv(prevfloat(Inf16))))
+
+hugepos(::Type{Finite64}) = Finite64(inv(tiny(Float64)))
+hugepos(::Type{Finite32}) = Finite32(inv(tiny(Float32)))
+hugepos(::Type{Finite16}) = Finite16(inv(tiny(Float16)))
+
+tinyneg(::Type{Finite64}) = -tinypos(Float64)
+tinyneg(::Type{Finite32}) = -tinypos(Float32)
+tinyneg(::Type{Finite16}) = -tinypos(Float16)
+
+hugeneg(::Type{Finite64}) = -hugepos(Float64)
+hugeneg(::Type{Finite32}) = -hugepos(Float32)
+hugeneg(::Type{Finite16}) = -hugepos(Float16)
+
+
+#=
+    These values are used in arithmetically critical paths.
+    We define `const`s to gain a few units of throughput
+    when computing at the advancing cusp.
+=#
+
+const TinyPos64 = tinypos(Float64)
+const TinyPos32 = tinypos(Float32)
+const TinyPos16 = tinypos(Float16)
+
+const HugePos64 = hugepos(Float64)
+const HugePos32 = hugepos(Float32)
+const HugePos16 = hugepos(Float16)
+
+const TinyNeg64 = tinyneg(Float64)
+const TinyNeg32 = tinyneg(Float32)
+const TinyNeg16 = tinyneg(Float16)
+
+const HugeNeg64 = hugeneg(Float64)
+const HugeNeg32 = hugeneg(Float32)
+const HugeNeg16 = hugeneg(Float16)
+
+
+for (T,P,N) in ( (:Finite64, :TinyPos64, :TinyNeg64),
+                 (:Finite64, :TinyPos64, :TinyNeg64),
+                 (:Finite64, :TinyPos64, :TinyNeg64) )
+  @eval begin
+    @inline saturate_tiny(computed::$T, signbit::Bool=false)
+        !iszero(computed) ? computed : ifelse(signbit, $N, $P)
+  end
+end
+
+for (T,P,N) in ( (:Finite64, :HugePos64, :HugeNeg64),
+                 (:Finite64, :HugePos64, :HugeNeg64),
+                 (:Finite64, :HugePos64, :HugeNeg64) )
+  @eval begin
+    @inline saturate_huge(computed::$T, signbit::Bool=false)
+        !iszero(computed) ? computed : ifelse(signbit, $N, $P)
+  end
+end
+
+macro saturating(fp, T)
+    quote
+      begin
+        local absfp = abs($fp)
+        return tiny($T) <= absfp <= huge($T) ?
+                                         $fp :
+                   ( absfp > huge($T)        ? 
+                     copysign(huge($T), $fp) : 
+                     copysign(tiny($T), $fp)   )
+      end
+    end
+end
+
+for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float16) )
+   @eval begin
+       function square(x::$T)
+            fp = $F(x)*$F(x)
+            fp = @saturating(fp,$T)
+            return $T(fp)    
+       end
+        
+       function cube(x::$T)
+            fp = $F(x)*$F(x)*$F(x)
+            fp = @saturating(fp,$T)
+            return $T(fp)
+       end
+   end
+end
+
+for O in ( :(+), :(-), :(*), :(/), :(^),  
+           :hypot 
+         )       
+    @eval begin
+        function $O(x::Finite64, y::Finite64)
+            fp = $O(Float64(x), Float64(y))
+            fp = @saturating(fp, Float64)
+            return Finite64(fp)
+        end
+        
+        function $O(x::Finite32, y::Finite32)
+            fp = $O(Float32(x), Float32(y))
+            fp = @saturating(fp, Float32)
+            return Finite32(fp)
+        end
+        
+        function $O(x::Finite16, y::Finite16)
+            fp = $O(Float16(x), Float16(y))
+            fp = @saturating(fp, Float16)
+            return Finite16(fp)
+        end
+    end
+end
+
+
+
+for O in ( :flipsign, :copysign,
+           :min, :max, 
+           :div, :rem, :fld, :mod, :cld
+         )       
     @eval begin
         $O(x::Finite64, y::Finite64) = Finite64($O(Float64(x), Float64(y))) 
         $O(x::Finite32, y::Finite32) = Finite32($O(Float32(x), Float32(y))) 
