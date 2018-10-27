@@ -195,13 +195,13 @@ hugepos(::Type{Finite64}) = Finite64(inv(tiny(Float64)))
 hugepos(::Type{Finite32}) = Finite32(inv(tiny(Float32)))
 hugepos(::Type{Finite16}) = Finite16(inv(tiny(Float16)))
 
-tinyneg(::Type{Finite64}) = -tinypos(Float64)
-tinyneg(::Type{Finite32}) = -tinypos(Float32)
-tinyneg(::Type{Finite16}) = -tinypos(Float16)
+tinyneg(::Type{Finite64}) = -tinypos(Finite64)
+tinyneg(::Type{Finite32}) = -tinypos(Finite32)
+tinyneg(::Type{Finite16}) = -tinypos(Finite16)
 
-hugeneg(::Type{Finite64}) = -hugepos(Float64)
-hugeneg(::Type{Finite32}) = -hugepos(Float32)
-hugeneg(::Type{Finite16}) = -hugepos(Float16)
+hugeneg(::Type{Finite64}) = -hugepos(Finite64)
+hugeneg(::Type{Finite32}) = -hugepos(Finite32)
+hugeneg(::Type{Finite16}) = -hugepos(Finite16)
 
 
 #=
