@@ -226,19 +226,22 @@ const HugeNeg64 = hugeneg(Finite64)
 const HugeNeg32 = hugeneg(Finite32)
 const HugeNeg16 = hugeneg(Finite16)
 
-
 macro saturating(fp, T)
-    quote
-      begin
-        local absfp = abs($fp)
-        return tiny($T) <= absfp <= huge($T) ?
-                                         $fp :
-                   ( absfp > huge($T)        ? 
-                     copysign(huge($T), $fp) : 
-                     copysign(tiny($T), $fp)   )
-      end
+  quote
+    begin
+      local absfp = abs($fp)
+      local normalvalue = tiny($T) <= absfp <= huge($T)
+      return if normalvalue
+                 $fp
+             elseif absfp > huge($T)
+                 copysign(huge($T), $fp)
+             else
+                 copysign(tiny($T), $fp)
+             end
     end
+  end
 end
+
 
 
 for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float16) )
