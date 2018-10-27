@@ -29,6 +29,42 @@ as large a magnitude as is (a) inv_ersable without generating zero and (b) _.
 _tiny_ is positive and as small a magnitude as is (a) inv_ersable without generating a floating point
 infinity and (b) _.
 
+### Tiny and Huge
+
+
+These are the definitions for _tiny_ and _huge_, parameterized by floating point type.
+```
+tiny(::Type{Float64}) = nextfloat(inv(prevfloat(Inf64)))
+tiny(::Type{Float32}) = nextfloat(inv(prevfloat(Inf32)))
+tiny(::Type{Float16}) = nextfloat(inv(prevfloat(Inf16)))
+
+huge(::Type{Float64}) = inv(tiny(Float64))
+huge(::Type{Float32}) = inv(tiny(Float32))
+huge(::Type{Float16}) = inv(tiny(Float16))
+```
+
+`tiny(T)` is the positive value nearest zero(T) for which `inv(tiny(T))` is finite.
+`huge(T)` is the positive value nearest T(Inf) for which `inv(huge(T)) == tiny(T)`.
+
+A look at the definitions shows that there is exactly one non-zero floating point
+value that is less than `tiny(T)`.  There are exactly seven (7) finite floating point
+values of type `T` that are greater than `huge(T)`.  They are given by this expression:
+`[nextfloat(huge(T), n) for n=1:7]` where `T` is one of `{Float64, Float32, Float16}`.
+
+These exceptionally large and exceptionally small values may arise in the course of
+computation. It is important to use inequality tests rather than test for equality
+or doesnotequal when ascertaining whether to saturate a result or not.
+
+----
+
+__THIS IS REQUIRED OF THE IMPLEMENTATION__ 
+
+It is _necessary_ that none of the exceptionally large or exceptionally small finite, nonzero values
+be permitted to propogate.  The exceptionally large values (seven for each type) must be saturated
+to _huge_ and the exceptionally small value (one for each type) must be saturated to _tiny_ when
+generated.  To allow an exceptional finite value to be returned as a computational result
+is to abrogate the logical consistancy of the implementation.
+
 ----
 
 ## Use
