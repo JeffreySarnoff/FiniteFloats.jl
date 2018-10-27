@@ -138,19 +138,6 @@ for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float1
 end
 
 
-for O in ( :flipsign, :copysign,
-           :min, :max, 
-           :(+), :(-), :(*), :(/), :(^),  
-           :div, :rem, :fld, :mod, :cld,
-           :hypot 
-          )       
-    @eval begin
-        $O(x::Finite64, y::Finite64) = Finite64($O(Float64(x), Float64(y))) 
-        $O(x::Finite32, y::Finite32) = Finite32($O(Float32(x), Float32(y))) 
-        $O(x::Finite16, y::Finite16) = Finite16($O(Float16(x), Float16(y))) 
-    end
-end
-
 
 #=
 was 
