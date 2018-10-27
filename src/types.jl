@@ -28,19 +28,19 @@ unsigned(::Type{Finite64}) = UInt64
 unsigned(::Type{Finite32}) = UInt32
 unsigned(::Type{Finite16}) = UInt16
 
-Base.typemax(::Type{Finite64}) = 1.7976931348623157e308     #  realmax(Float64)
-Base.typemax(::Type{Finite32}) = 3.4028235f38               #  realmax(Float32)
-Base.typemax(::Type{Finite16}) = Float16(6.55e4)            #  realmax(Float16)
-typemaxneg(::Type{Finite64})   = -1.7976931348623157e308    # -realmax(Float64) 
-typemaxneg(::Type{Finite32})   = -3.4028235f38              # -realmax(Float32)
-typemaxneg(::Type{Finite16})   = Float16(-6.55e4)           # -realmax(Float16)
+Base.typemax(::Type{Finite64}) = Finite64(1.7976931348623157e308)     #  realmax(Float64)
+Base.typemax(::Type{Finite32}) = Finite32(3.4028235f38)               #  realmax(Float32)
+Base.typemax(::Type{Finite16}) = Finite16(Float16(6.55e4))            #  realmax(Float16)
+typemaxneg(::Type{Finite64})   = Finite64(-1.7976931348623157e308)    # -realmax(Float64) 
+typemaxneg(::Type{Finite32})   = Finite32(-3.4028235f38)              # -realmax(Float32)
+typemaxneg(::Type{Finite16})   = Finite16(Float16(-6.55e4))           # -realmax(Float16)
 
-Base.typemin(::Type{Finite64}) = 2.2250738585072014e-308    #  realmin(Float64)
-Base.typemin(::Type{Finite32}) = 1.1754944f-38              #  realmin(Float32)
-Base.typemin(::Type{Finite16}) = Float16(6.104e-5)          #  realmin(Float16)
-typeminneg(::Type{Finite64})   = -2.2250738585072014e-308   # -realmin(Float64) 
-typeminneg(::Type{Finite32})   = -1.1754944f-38             # -realmin(Float32)
-typeminneg(::Type{Finite16})   = Float16(-6.104e-5)         # -realmin(Float16)
+Base.typemin(::Type{Finite64}) = Finite64(2.2250738585072014e-308)    #  realmin(Float64)
+Base.typemin(::Type{Finite32}) = Finite32(1.1754944f-38)              #  realmin(Float32)
+Base.typemin(::Type{Finite16}) = Finite16(Float16(6.104e-5))          #  realmin(Float16)
+typeminneg(::Type{Finite64})   = Finite64(-2.2250738585072014e-308)   # -realmin(Float64) 
+typeminneg(::Type{Finite32})   = Finite32(-1.1754944f-38)             # -realmin(Float32)
+typeminneg(::Type{Finite16})   = Finite16(Float16(-6.104e-5))         # -realmin(Float16)
 
 Base.floatmax(::Type{Finite64}) = Base.typemax(Finite64)
 Base.floatmax(::Type{Finite32}) = Base.typemax(Finite32)
