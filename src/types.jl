@@ -210,21 +210,21 @@ hugeneg(::Type{Finite16}) = -hugepos(Float16)
     when computing at the advancing cusp.
 =#
 
-const TinyPos64 = tinypos(Float64)
-const TinyPos32 = tinypos(Float32)
-const TinyPos16 = tinypos(Float16)
+const TinyPos64 = tinypos(Finite64)
+const TinyPos32 = tinypos(Finite32)
+const TinyPos16 = tinypos(Finite16)
 
-const HugePos64 = hugepos(Float64)
-const HugePos32 = hugepos(Float32)
-const HugePos16 = hugepos(Float16)
+const HugePos64 = hugepos(Finite64)
+const HugePos32 = hugepos(Finite32)
+const HugePos16 = hugepos(Finite16)
 
-const TinyNeg64 = tinyneg(Float64)
-const TinyNeg32 = tinyneg(Float32)
-const TinyNeg16 = tinyneg(Float16)
+const TinyNeg64 = tinyneg(Finite64)
+const TinyNeg32 = tinyneg(Finite32)
+const TinyNeg16 = tinyneg(Finite16)
 
-const HugeNeg64 = hugeneg(Float64)
-const HugeNeg32 = hugeneg(Float32)
-const HugeNeg16 = hugeneg(Float16)
+const HugeNeg64 = hugeneg(Finite64)
+const HugeNeg32 = hugeneg(Finite32)
+const HugeNeg16 = hugeneg(Finite16)
 
 
 for (T,P,N) in ( (:Finite64, :TinyPos64, :TinyNeg64),
