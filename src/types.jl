@@ -4,6 +4,44 @@ primitive type Finite64 <: AbstractFinite 64 end
 primitive type Finite32 <: AbstractFinite 32 end
 primitive type Finite16 <: AbstractFinite 16 end
 
+
+@inline function FiniteFloat64(x::Float64)
+    isfinite(x) && return x
+    if isinf(x)
+       signbit(x) ? Finite64_maxneg : Finite64_maxpos
+    else
+       throw(DomainError("NaN encountered"))
+    end
+end
+
+@inline function FiniteFloat32(x::Float32)
+    isfinite(x) && return x
+    if isinf(x)
+       signbit(x) ? Finite32_maxneg : Finite32_maxpos
+    else
+       throw(DomainError("NaN32 encountered"))
+    end
+end
+
+@inline function FiniteFloat16(x::Float16)
+    isfinite(x) && return x
+    if isinf(x)
+       signbit(x) ? Finite16_maxneg : Finite16_maxpos
+    else
+       throw(DomainError("NaN16 encountered"))
+    end
+end
+
+
+Finite64(x::Float64) = reinterpret(Finite64, FiniteFloat64(x))
+Finite32(x::Float32) = reinterpret(Finite32, FiniteFloat32(x))
+Finite16(x::Float16) = reinterpret(Finite16, FiniteFloat16(x))
+
+Float64(x::Finite64) = reinterpret(Float64, x)
+Float32(x::Finite32) = reinterpret(Float32, x)
+Float16(x::Finite16) = reinterpret(Float16, x)
+
+
 float(::Type{Finite64}) = Float64
 float(::Type{Finite32}) = Float32
 float(::Type{Finite16}) = Float16
@@ -65,42 +103,6 @@ const Finite16_maxpos = typemax(Finite16)
 const Finite16_minpos = typemin(Finite16)
 const Finite16_maxneg = typemaxneg(Finite16)
 const Finite16_minneg = typeminneg(Finite16)
-
-@inline function FiniteFloat64(x::Float64)
-    isfinite(x) && return x
-    if isinf(x)
-       signbit(x) ? Finite64_maxneg : Finite64_maxpos
-    else
-       throw(DomainError("NaN encountered"))
-    end
-end
-
-@inline function FiniteFloat32(x::Float32)
-    isfinite(x) && return x
-    if isinf(x)
-       signbit(x) ? Finite32_maxneg : Finite32_maxpos
-    else
-       throw(DomainError("NaN32 encountered"))
-    end
-end
-
-@inline function FiniteFloat16(x::Float16)
-    isfinite(x) && return x
-    if isinf(x)
-       signbit(x) ? Finite16_maxneg : Finite16_maxpos
-    else
-       throw(DomainError("NaN16 encountered"))
-    end
-end
-
-
-Finite64(x::Float64) = reinterpret(Finite64, FiniteFloat64(x))
-Finite32(x::Float32) = reinterpret(Finite32, FiniteFloat32(x))
-Finite16(x::Float16) = reinterpret(Finite16, FiniteFloat16(x))
-
-Float64(x::Finite64) = reinterpret(Float64, x)
-Float32(x::Finite32) = reinterpret(Float32, x)
-Float16(x::Finite16) = reinterpret(Float16, x)
 
 for O in ( :(-), :(+),
            :string,
