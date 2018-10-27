@@ -13,6 +13,24 @@
 [![Build Status](https://travis-ci.org/JeffreySarnoff/FiniteFloats.jl.svg?branch=master)](https://travis-ci.org/JeffreySarnoff/FiniteFloats.jl)
 ----
 
+### this is an experimental branch
+#### the major difference
+- underflow to zero is intercepted and replaced with a _tiny_ value
+
+- floatmin(T) * floatmin(T) == floatmin(T)
+- floatmax(T) * floatmax(T) == floatmax(T)
+
+Generally, arithmetic that would underflow to zero or overflow to Inf is made to be saturating.
+So, the only way to obtain zero within the domain for FiniteFloats as specified (Floats without
+infinities and without NaNs [almost always]) is to set it explicitly or to multiply a value by zero.
+
+There are two saturating values, colloquially: __huge__ and __tiny__.  _huge_ is positive and
+as large a magnitude as is (a) inv_ersable without generating zero and (b) _. 
+_tiny_ is positive and as small a magnitude as is (a) inv_ersable without generating a floating point
+infinity and (b) _.
+
+----
+
 ## Use
 ```julia
 
