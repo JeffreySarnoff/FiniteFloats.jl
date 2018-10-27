@@ -227,24 +227,6 @@ const HugeNeg32 = hugeneg(Finite32)
 const HugeNeg16 = hugeneg(Finite16)
 
 
-for (T,P,N) in ( (:Finite64, :TinyPos64, :TinyNeg64),
-                 (:Finite64, :TinyPos64, :TinyNeg64),
-                 (:Finite64, :TinyPos64, :TinyNeg64) )
-  @eval begin
-    @inline saturate_tiny(computed::$T, signbit::Bool=false)
-        !iszero(computed) ? computed : ifelse(signbit, $N, $P)
-  end
-end
-
-for (T,P,N) in ( (:Finite64, :HugePos64, :HugeNeg64),
-                 (:Finite64, :HugePos64, :HugeNeg64),
-                 (:Finite64, :HugePos64, :HugeNeg64) )
-  @eval begin
-    @inline saturate_huge(computed::$T, signbit::Bool=false)
-        !iszero(computed) ? computed : ifelse(signbit, $N, $P)
-  end
-end
-
 macro saturating(fp, T)
     quote
       begin
@@ -257,6 +239,7 @@ macro saturating(fp, T)
       end
     end
 end
+
 
 for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float16) )
    @eval begin
