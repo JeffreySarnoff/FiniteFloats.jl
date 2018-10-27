@@ -180,13 +180,13 @@ huge(::Type{Float64}) = inv(tiny(Float64))
 huge(::Type{Float32}) = inv(tiny(Float32))
 huge(::Type{Float16}) = inv(tiny(Float16))
 
-tiny(::Type{Fixed64}) = nextfloat(inv(prevfloat(Inf64)))
-tiny(::Type{Fixed32}) = nextfloat(inv(prevfloat(Inf32)))
-tiny(::Type{Fixed16}) = nextfloat(inv(prevfloat(Inf16)))
+tiny(::Type{Finite64}) = nextfloat(inv(prevfloat(Inf64)))
+tiny(::Type{Finite32}) = nextfloat(inv(prevfloat(Inf32)))
+tiny(::Type{Finite16}) = nextfloat(inv(prevfloat(Inf16)))
 
-huge(::Type{Fixed64}) = inv(tiny(Float64))
-huge(::Type{Fixed32}) = inv(tiny(Float32))
-huge(::Type{Fixed16}) = inv(tiny(Float16))
+huge(::Type{Finite64}) = inv(tiny(Float64))
+huge(::Type{Finite32}) = inv(tiny(Float32))
+huge(::Type{Finite16}) = inv(tiny(Float16))
 
 
 #=
