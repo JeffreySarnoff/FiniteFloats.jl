@@ -87,6 +87,19 @@ floatmin(::Type{Finite64}) = typemin(Finite64)
 floatmin(::Type{Finite32}) = typemin(Finite32)
 floatmin(::Type{Finite16}) = typemin(Finite16)
 
+# consts are used to accelerate replacement of infinities
+const Finite64_maxpos = typemax(Finite64)
+const Finite64_minpos = typemin(Finite64)
+const Finite64_maxneg = typemaxneg(Finite64)
+const Finite64_minneg = typeminneg(Finite64)
+const Finite32_maxpos = typemax(Finite32)
+const Finite32_minpos = typemin(Finite32)
+const Finite32_maxneg = typemaxneg(Finite32)
+const Finite32_minneg = typeminneg(Finite32)
+const Finite16_maxpos = typemax(Finite16)
+const Finite16_minpos = typemin(Finite16)
+const Finite16_maxneg = typemaxneg(Finite16)
+const Finite16_minneg = typeminneg(Finite16)
 
 for O in ( :(-), :(+),
            :string,
