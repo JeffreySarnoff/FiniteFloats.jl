@@ -41,6 +41,9 @@ Float64(x::Finite64) = reinterpret(Float64, x)
 Float32(x::Finite32) = reinterpret(Float32, x)
 Float16(x::Finite16) = reinterpret(Float16, x)
 
+Float64(x::Finite32) = reinterpret(Float64, Finite64(x))
+Float64(x::Finite16) = reinterpret(Float64, Finite64(x))
+Float32(x::Finite16) = reinterpret(Float32, Finite32(x))
 
 float(::Type{Finite64}) = Float64
 float(::Type{Finite32}) = Float32
