@@ -189,15 +189,11 @@ sincos(x::Finite64) = map((a,b)->(Finite64(a), Finite64(b)), sincos(Float64(x)).
 sincos(x::Finite32) = map((a,b)->(Finite32(a), Finite32(b)), sincos(Float32(x))...,)
 sincos(x::Finite16) = map((a,b)->(Finite16(a), Finite16(b)), sincos(Float16(x))...,)
 
-clamp(x::T, lo::T, hi::T) where {T<:Finite64} = Finite64(clamp(Float64(x), Float64(lo), Float64(hi)))
-
 for (T,F) in ( (:Finite64, :Float64), (:Finite32, :Float32), (:Finite16, :Float16) )
    @eval begin
        clamp(x::$T, lo::$T, hi::$T) = $T( clamp($F(x), $F(lo), $F(hi)) )
    end
 end
-
-
 
 Base.promote_rule(::Type{Float64}, ::Type{Finite64}) = Finite64
 Base.promote_rule(::Type{Float32}, ::Type{Finite32}) = Finite32
